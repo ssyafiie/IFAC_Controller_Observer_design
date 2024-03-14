@@ -1,0 +1,201 @@
+% This code is developed for the theorem 
+% System definition
+A=[-1.2 0;0.2 -1.9];
+A1=[-1 0.6;-0.4 -1];
+A2=[0 -0.6;-0.6 0];
+Bu=[1;0];
+Bw=[3;0];
+C=[0 1];
+C1=[0 0];
+C2=[0 0];
+Dw=[0 0];
+% defined variable
+h1=0.05;
+h2=0.15;
+k1=0.25;
+k2=0.35;
+mu1=0.3;
+mu2=0.5;
+n=size(A,1);
+m=size(Bu,2);
+q=size(C,1);
+% gamma=0.29870000;
+%% LMI set
+setlmis([]); 
+Y=lmivar(1,[n 1]);
+bY=lmivar(1,[n 1]);
+X=lmivar(2,[n q]);
+Q1=lmivar(1,[n 1]);
+Q2=lmivar(1,[n 1]);
+R1=lmivar(1,[n 1]);
+R2=lmivar(1,[n 1]);
+S1=lmivar(1,[n 1]);
+S2=lmivar(1,[n 1]);
+T1=lmivar(1,[n 1]);
+T2=lmivar(1,[n 1]);
+U1=lmivar(1,[n 1]);
+U2=lmivar(1,[n 1]);
+tT1=lmivar(1,[n 1]); %%% this is for $$\tilde{T}_i$$
+tT2=lmivar(1,[n 1]);
+tU1=lmivar(1,[n 1]);
+tU2=lmivar(1,[n 1]);
+W1=lmivar(1,[n 1]);
+W2=lmivar(1,[n 1]);
+Z1=lmivar(1,[n 1]);
+Z2=lmivar(1,[n 1]);
+gamma=lmivar(1,[1 1]);
+
+mQ1=lmivar(1,[q 1]);
+mQ2=lmivar(1,[n-q 1]);
+[mU,mC,mV]=svd(C);
+%% LMI condition
+% entry (1,1)
+lmiterm([1 1 1 Y],A,1,'s');
+lmiterm([1 1 1 X],-1,C,'s');
+lmiterm([1 1 1 Q1],1,1);
+lmiterm([1 1 1 Q2],1,1);
+lmiterm([1 1 1 S1],1,1);
+lmiterm([1 1 1 S2],1,1);
+lmiterm([1 1 1 T1],-k1,1);
+lmiterm([1 1 1 T2],-k2,1);
+% entry (1,4)
+lmiterm([1 1 4 Y],A1,1);
+lmiterm([1 1 4 X],-1,C1);
+lmiterm([1 1 4 T1],k1,1);
+lmiterm([1 1 4 W1],-k1,1);
+% entry (1,5)
+lmiterm([1 1 5 Y],A2,1);
+lmiterm([1 1 5 X],-1,C2);
+lmiterm([1 1 5 T2],k2,1);
+lmiterm([1 1 5 W2],-k2,1);
+% entry (1,6) 
+lmiterm([1 1 6 W1],k1,1);
+% entry (1,7)
+lmiterm([1 1 7 W2],k2,1);
+% entry (1,8) from \pi_{15}
+lmiterm([1 1 8 Y],k1^2,A');
+lmiterm([1 1 8 -X],C',-k1^2);
+% entry (1,9)
+lmiterm([1 1 9 Y],k2^2,A');
+lmiterm([1 1 9 -X],C',-k2^2);
+% entry (1,10) from \pi_{16}
+lmiterm([1 1 10 Y],(k1-h1)^2,A');
+lmiterm([1 1 10 -X],C',(k1-h1)^2);
+% entry (1,11)
+lmiterm([1 1 11 Y],(k2-h2)^2,A');
+lmiterm([1 1 11 -X],C',(k2-h2)^2);
+% entry (1,12)
+lmiterm([1 1 12 0],Bw);
+% lmiterm([1 1 12 -X],Dw',-1);
+% entry (2,2)
+lmiterm([1 2 2 R1],1,1);
+lmiterm([1 2 2 Q1],-1,1);
+lmiterm([1 2 2 U1],(k1-h1),-1);
+% entry (2,4) from \pi_{23}
+lmiterm([1 2 4 U1],(k1-h1),1);
+lmiterm([1 2 4 Z1],(k1-h1),1);
+% entry (2,5)
+lmiterm([1 2 5 U2],(k2-h2),1);
+lmiterm([1 2 5 Z2],(k2-h2),1);
+% entry (2,6)
+lmiterm([1 2 6 Z1],-(k1-h1),1);
+% entry (2,7)
+lmiterm([1 2 7 Z2],-(k2-h2),1);
+% entry (3,3)
+lmiterm([1 3 3 R2],1,1);
+lmiterm([1 3 3 Q2],-1,1);
+lmiterm([1 3 3 U2],(k2-h2),-1);
+% entry (4,4) from \pi_{33}
+lmiterm([1 4 4 S1],-(1-mu1),1);
+lmiterm([1 4 4 T1],-2*k1,1);
+lmiterm([1 4 4 W1],2*k1,1);
+lmiterm([1 4 4 U1],(k1-h1),-1);
+% entry (4,6) from \pi_{34}
+lmiterm([1 4 6 T1],k1,1);
+lmiterm([1 4 6 W1],-k1,1);
+lmiterm([1 4 6 U1],(k1-h1),1);
+lmiterm([1 4 6 Z1],(k1-h1),1);
+% entry (4,7)
+lmiterm([1 4 7 T2],k2,1);
+lmiterm([1 4 7 W2],-k2,1);
+lmiterm([1 4 7 U2],(k2-h2),1);
+lmiterm([1 4 7 Z2],(k2-h2),1);
+% entry (4,8) from \pi_{35}
+lmiterm([1 4 8 Y],k1^2,A1');
+lmiterm([1 4 8 -X],C1',-k1^2);
+% entry (4,9)
+lmiterm([1 4 9 Y],k2^2,A2');
+lmiterm([1 4 9 -X],C2',-k2^2);
+% entry (4,10) from \pi_{36}
+lmiterm([1 4 10 Y],(k1-h1)^2,A1');
+lmiterm([1 4 10 -X],C1',-(k1-h1)^2);
+% entry (4,11)
+lmiterm([1 4 11 Y],(k2-h2)^2,A2');
+lmiterm([1 4 11 -X],C2',-(k2-h2)^2);
+% entry (5,5)
+lmiterm([1 5 5 S2],-(1-mu2),1);
+lmiterm([1 5 5 T2],-2*k2,1);
+lmiterm([1 5 5 W2],2*k2,1);
+lmiterm([1 5 5 U2],(k2-h2),-1);
+% entry (6,6) from \pi_{44};
+lmiterm([1 6 6 R1],-1,1);
+lmiterm([1 6 6 T1],-k1,1);
+lmiterm([1 6 6 U1],-2,(k1-h1));
+lmiterm([1 6 6 Z1],-2,(k1-h1));
+% entry (7,7)
+lmiterm([1 7 7 R2],-1,1);
+lmiterm([1 7 7 T2],-k2,1);
+lmiterm([1 7 7 U2],-2,(k2-h2));
+lmiterm([1 7 7 Z2],-2,(k2-h2));
+% entry (8,8)
+lmiterm([1 8 8 tT1],k1^2,-1);
+% entry (9,9)
+lmiterm([1 9 9 tT2],k2^2,-1);
+% entry (10,10)
+lmiterm([1 10 10 tU1],(k1-h1)^2,-1);
+% entry (11,11)
+lmiterm([1 11 11 tU2],(k2-h2)^2,-1);
+% entry (12,12);
+lmiterm([1 12 12 0],-gamma^2);
+%% second condition
+%% condition 2
+lmiterm([-2 1 1 T1],1,1);
+lmiterm([-2 1 2 W1],1,1);
+lmiterm([-2 2 2 T1],1,1);
+%% condition 3
+lmiterm([-3 1 1 T2],1,1);
+lmiterm([-3 1 2 W2],1,1);
+lmiterm([-3 2 2 T2],1,1);
+%% condition 4
+lmiterm([-4 1 1 U1],1,1);
+lmiterm([-4 1 2 Z1],1,1);
+lmiterm([-4 2 2 U1],1,1);
+%% condition 5
+lmiterm([-5 1 1 U2],1,1);
+lmiterm([-5 1 2 Z2],1,1);
+lmiterm([-5 2 2 U2],1,1);
+%% conditions for positiveness
+lmiterm([-6 1 1 Y],1,1);        % Y>0
+lmiterm([-7 1 1 Q1],1,1);
+lmiterm([-8 1 1 Q2],1,1);
+lmiterm([-9 1 1 R1],1,1);
+lmiterm([-10 1 1 R2],1,1);
+lmiterm([-11 1 1 S1],1,1);
+lmiterm([-12 1 1 S2],1,1);
+lmiterm([-13 1 1 T1],1,1);
+lmiterm([-14 1 1 T2],1,1);
+lmiterm([-15 1 1 U1],1,1);
+lmiterm([-16 1 1 U2],1,1);
+lmiterm([-17 1 1 tT1],1,1);
+lmiterm([-18 1 1 tT2],1,1);
+lmiterm([-19 1 1 tU1],1,1);
+lmiterm([-20 1 1 tU2],1,1);
+lmiterm([-21 1 1 mQ1],mV,mV');
+lmiterm([-21 2 2 mQ2],mV,mV');
+lmiterm([-22 1 1 gamma],1,1); %
+LMIs=getlmis;
+[tmin,xfeas]=feasp(LMIs);
+Y_ob=dec2mat(LMIs,xfeas,Y);
+X_ob=dec2mat(LMIs,xfeas,X);
+ZZ=C*Y_ob*C'*inv(C*C');
+L_ob=X_ob*inv(ZZ);
